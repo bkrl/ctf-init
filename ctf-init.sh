@@ -14,7 +14,7 @@ USER="${1:-${SUDO_USER:-ctf}}"
 echo 'Upgrading system packages'
 dnf upgrade -y
 
-echo 'Installing system prackages'
+echo 'Installing system packages'
 dnf install -y \
 	gdb vim git openssh-clients file wget curl python3-pwntools \
 	podman moby-engine \
