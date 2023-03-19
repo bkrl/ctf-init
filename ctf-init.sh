@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: 2023 Alexander Zhang
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 set -eo pipefail
 
 TEMPDIR="$(mktemp -d)"
