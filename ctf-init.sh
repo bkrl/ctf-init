@@ -16,7 +16,7 @@ dnf upgrade -y
 
 echo 'Installing system packages'
 dnf install -y \
-	gdb vim git openssh-clients file wget curl python3-pwntools firefox \
+	gdb vim git openssh-clients file wget curl python3-pwntools firefox exa \
 	podman moby-engine \
 	cargo rubygems python3-pip \
 	openssl-devel xz-devel pkgconf-pkg-config patchelf elfutils bsdtar \
