@@ -73,4 +73,27 @@ runuser -l "$USER" <<-'END_USER_SCRIPT'
 	echo 'Installing GEF'
 	rm -f ~/.gef-*.py
 	sh -c "$(curl -fsSL 'https://gef.blah.cat/sh')"
+
+	echo 'Configuring pwninit'
+	cat <<-'END_PWNINIT_TEMPLATE' > ~/.config/pwninit-template.py
+		#!/usr/bin/env python3
+
+		from pwn inport *
+
+		{bindings}
+
+		context.binary = {bin_name}
+
+		if args.REMOTE:
+		    r = remote("addr", 1337)
+		elif args.DEBUG:
+		    r = gdb.debug({proc_args})
+		else:
+		    r = process({proc_args})
+
+		
+
+		r.interactive()
+	END_PWNINIT_TEMPLATE
+	echo "alias pwninit='pwninit --template-path ~/.config/pwninit-template.py'" >> ~/.bashrc
 END_USER_SCRIPT
