@@ -16,7 +16,7 @@ dnf upgrade -y
 
 echo 'Installing system packages'
 dnf install -y \
-	gdb vim git openssh-clients file wget curl python3-pwntools firefox exa \
+	gdb vim git openssh-clients file wget curl python3-pwntools firefox exa tmux \
 	podman moby-engine \
 	cargo rubygems python3-pip \
 	openssl-devel xz-devel pkgconf-pkg-config patchelf elfutils bsdtar \
@@ -50,8 +50,12 @@ cat <<-'END_PWN_CONF' > /etc/pwn.conf
 	interval=never
 
 	[context]
-	terminal=['gnome-terminal', '--']
+	terminal=['tmux', 'splitw', '-h']
 END_PWN_CONF
+
+echo 'Configuring tmux'
+echo 'set -g mouse on' >> /etc/tmux.conf
+echo 'set background=dark' >> /etc/vimrc
 
 runuser -l "$USER" <<-'END_USER_SCRIPT'
 	set -eo pipefail
