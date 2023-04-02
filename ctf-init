@@ -82,7 +82,7 @@ runuser -l "$USER" <<-'END_USER_SCRIPT'
 	cat <<-'END_PWNINIT_TEMPLATE' > ~/.config/pwninit-template.py
 		#!/usr/bin/env python3
 
-		from pwn inport *
+		from pwn import *
 
 		{bindings}
 
