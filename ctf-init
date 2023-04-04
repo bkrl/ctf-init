@@ -90,10 +90,10 @@ runuser -l "$USER" <<-'END_USER_SCRIPT'
 
 		if args.REMOTE:
 		    r = remote("addr", 1337)
-		elif args.DEBUG:
-		    r = gdb.debug({proc_args})
 		else:
 		    r = process({proc_args})
+		    if args.GDB:
+		        gdb.attach(r)
 
 		
 
