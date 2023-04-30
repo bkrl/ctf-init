@@ -55,7 +55,7 @@ cat <<-'END_PWNTOOLS_TERMINAL' > /usr/local/bin/pwntools-terminal
 	
 	set -e
 	
-	exec "$@" <>"$(cat ~/.pwntools-tty)" >&0 2>&1
+	exec "$@" <>"$(cat "$XDG_RUNTIME_DIR/pwntools-tty")" >&0 2>&1
 END_PWNTOOLS_TERMINAL
 chmod +x /usr/local/bin/pwntools-terminal
 
@@ -64,8 +64,8 @@ cat <<-'END_TERM' > /usr/local/bin/term
 	
 	set -e
 
-	tty > ~/.pwntools-tty
-	trap 'rm -f ~/.pwntools-tty' EXIT
+	tty > "$XDG_RUNTIME_DIR/pwntools-tty"
+	trap 'rm -f -- "$XDG_RUNTIME_DIR/pwntools-tty"' EXIT
 	tail -f /dev/null
 END_TERM
 chmod +x /usr/local/bin/term
