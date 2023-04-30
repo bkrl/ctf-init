@@ -16,7 +16,7 @@ dnf upgrade -y
 
 echo 'Installing system packages'
 dnf install -y \
-	gdb vim git openssh-clients file wget curl python3-pwntools firefox exa tmux \
+	gdb vim git openssh-clients file wget curl python3-pwntools firefox exa \
 	podman moby-engine \
 	cargo rubygems python3-pip \
 	openssl-devel xz-devel pkgconf-pkg-config patchelf elfutils bsdtar \
@@ -48,14 +48,27 @@ echo 'Configuring pwntools'
 cat <<-'END_PWN_CONF' > /etc/pwn.conf
 	[update]
 	interval=never
-
-	[context]
-	terminal=['tmux', 'splitw', '-h']
 END_PWN_CONF
 
-echo 'Configuring tmux'
-echo 'set -g mouse on' >> /etc/tmux.conf
-echo 'set background=dark' >> /etc/vimrc
+cat <<-'END_PWNTOOLS_TERMINAL' > /usr/local/bin/pwntools-terminal
+	#!/bin/sh
+	
+	set -e
+	
+	exec "$@" <>"$(cat ~/.pwntools-tty)" >&0 2>&1
+END_PWNTOOLS_TERMINAL
+chmod +x /usr/local/bin/pwntools-terminal
+
+cat <<-'END_TERM' > /usr/local/bin/term
+	#!/bin/sh
+	
+	set -e
+
+	tty > ~/.pwntools-tty
+	trap 'rm -f ~/.pwntools-tty' EXIT
+	tail -f /dev/null
+END_TERM
+chmod +x /usr/local/bin/term
 
 runuser -l "$USER" <<-'END_USER_SCRIPT'
 	set -eo pipefail
