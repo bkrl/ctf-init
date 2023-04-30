@@ -24,7 +24,7 @@ dnf install -y \
 	gdb-gdbserver
 
 systemctl enable --now docker.service
-usermod -aG docker "$USER"
+usermod -aG docker -- "$USER"
 
 echo 'Installing one_gadget'
 gem install one_gadget
@@ -41,7 +41,7 @@ echo 'Installing Ghidra'
 rm -rf /opt/ghidra
 mkdir /opt/ghidra
 bsdtar -xf "$TEMPDIR/ghidra.zip" -C /opt/ghidra --strip-components 1 --preserve-permissions
-rm "$TEMPDIR/ghidra.zip"
+rm -- "$TEMPDIR/ghidra.zip"
 ln -sf /opt/ghidra/ghidraRun /usr/local/bin/ghidra
 
 echo 'Configuring pwntools'
@@ -83,7 +83,7 @@ runuser -l "$USER" <<-'END_USER_SCRIPT'
 		END_PROFILE_LINES
 	fi
 	export CARGO_TARGET_DIR="$HOME/.cargo-target"
-	mkdir -p "$CARGO_TARGET_DIR"
+	mkdir -p -- "$CARGO_TARGET_DIR"
 	cargo install pwninit
 	cargo install xgadget --features cli-bin
 
