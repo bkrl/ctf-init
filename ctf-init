@@ -53,8 +53,6 @@ END_PWN_CONF
 cat <<-'END_PWNTOOLS_TERMINAL' > /usr/local/bin/pwntools-terminal
 	#!/bin/sh
 	
-	set -e
-	
 	exec "$@" <>"$(cat "$XDG_RUNTIME_DIR/pwntools-tty")" >&0 2>&1
 END_PWNTOOLS_TERMINAL
 chmod +x /usr/local/bin/pwntools-terminal
