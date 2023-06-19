@@ -1,0 +1,140 @@
+#cloud-config
+
+hostname: ctf
+prefer_fqdn_over_hostname: false
+
+user:
+  name: alex
+  ssh_authorized_keys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8i1tyqtQX+8Klc18XHUUO+PFVI/FsjbGbfcbQfWOXj alex@bread
+  lock_passwd: false
+  groups: docker, wheel
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+packages:
+  - adobe-source-code-pro-fonts
+  - bsdtar
+  - cargo
+  - curl
+  - elfutils
+  - exa
+  - file
+  - firefox
+  - gdb
+  - gdb-gdbserver
+  - gdm
+  - git
+  - gnome-shell
+  - java-17-openjdk-devel
+  - jq
+  - moby-engine
+  - openssh-clients
+  - openssl-devel
+  - patchelf
+  - pkgconf-pkg-config
+  - podman
+  - python3-pip
+  - python3-pwntools
+  - rubygems
+  - spice-vdagent
+  - vim
+  - wget
+  - xz-devel
+
+write_files:
+  - path: /etc/pwn.conf
+    content: |
+      [update]
+      interval=never
+  - path: /usr/local/bin/pwntools-terminal
+    permissions: '0755'
+    content: |
+      #!/bin/sh
+      
+      exec "$@" <>"$(cat "$XDG_RUNTIME_DIR/pwntools-tty")" >&0 2>&1
+  - path: /usr/local/bin/term
+    permissions: '0755'
+    content: |
+      #!/bin/sh
+      
+      set -e
+
+      tty > "$XDG_RUNTIME_DIR/pwntools-tty"
+      trap 'rm -f -- "$XDG_RUNTIME_DIR/pwntools-tty"' EXIT
+      tail -f /dev/null
+  - path: /etc/gdbinit
+    content: |
+      source /usr/local/lib/gef.py
+  - path: /usr/local/share/pwninit-template.py
+    content: |
+      #!/usr/bin/env python3
+
+      from pwn import *
+
+      {bindings}
+
+      context.binary = {bin_name}
+
+      if args.REMOTE:
+          r = remote("addr", 1337)
+      else:
+          r = process({proc_args})
+          if args.GDB:
+              gdb.attach(r)
+
+      
+
+      r.interactive()
+  - path: /etc/profile.d/pwninit-template.sh
+    content: |
+      alias pwninit='pwninit --template-path /usr/local/share/pwninit-template.py'
+  - path: /etc/gdm/custom.conf
+    content: |
+      [daemon]
+      AutomaticLoginEnable=True
+      AutomaticLogin=alex
+
+      [security]
+
+      [xdmcp]
+
+      [chooser]
+
+      [debug]
+
+runcmd:
+  - passwd -d alex
+  - |
+    set -e
+    export CARGO_INSTALL_ROOT='/usr/local'
+    cargo install pwninit
+    cargo install xgadget --features cli-bin
+  - curl -fsSLo /usr/local/lib/gef.py 'https://github.com/hugsy/gef/raw/main/gef.py'
+  - |
+    set -e
+    ghidra_file="$(mktemp)"
+    readonly ghidra_file
+    trap 'rm -f -- "${ghidra_file}"' EXIT
+
+    ghidra_url="$(
+        curl -fsSL \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            'https://api.github.com/repos/NationalSecurityAgency/ghidra/releases/latest' |
+            jq -r '.assets | .[] | first(select(.name | test("ghidra_\\d+\\.\\d+(\\.\\d+)?_PUBLIC_\\d{8}\\.zip"))).browser_download_url'
+    )"
+    readonly ghidra_url
+    curl -fsSLo "${ghidra_file}" -- "${ghidra_url}"
+
+    rm -rf /opt/ghidra
+    mkdir /opt/ghidra
+    bsdtar -xf "${ghidra_file}" -C /opt/ghidra --strip-components 1 --preserve-permissions
+    rm -- "${ghidra_file}"
+    ln -sf /opt/ghidra/ghidraRun /usr/local/bin/ghidra
+  - gem install one_gadget
+  - |
+    set -e
+    systemctl set-default graphical.target
+    systemctl start graphical.target

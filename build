@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec genisoimage -input-charset utf-8 -output ctf-seed.iso -volid cidata -joliet -rock user-data meta-data
