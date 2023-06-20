@@ -1,0 +1,12 @@
+#!/bin/sh
+
+exec virt-install \
+	-n "${1:-ctf}" \
+	--memory 8192 \
+	--vcpus 4 \
+	--import \
+	--cloud-init user-data=user-data \
+	--os-variant fedora38 \
+	--disk size=20,backing_store=/var/lib/libvirt/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2 \
+	--graphics spice,clipboard.copypaste=no,filetransfer.enable=no \
+	--virt-type kvm
