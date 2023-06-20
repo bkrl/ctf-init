@@ -134,7 +134,8 @@ runcmd:
     rm -- "${ghidra_file}"
     ln -sf /opt/ghidra/ghidraRun /usr/local/bin/ghidra
   - gem install one_gadget
-  - |
-    set -e
-    systemctl set-default graphical.target
-    systemctl start graphical.target
+
+  - systemctl set-default graphical.target
+
+power_state:
+  mode: poweroff
