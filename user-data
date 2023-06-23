@@ -30,6 +30,7 @@ packages:
   - java-17-openjdk-devel
   - jq
   - moby-engine
+  - netcat
   - openssh-clients
   - openssl-devel
   - patchelf
