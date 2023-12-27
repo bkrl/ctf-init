@@ -19,7 +19,7 @@ packages:
   - cargo
   - curl
   - elfutils
-  - exa
+  - eza
   - file
   - firefox
   - gdb
