@@ -21,7 +21,6 @@ packages:
   - elfutils
   - eza
   - file
-  - firefox
   - gdb
   - gdb-gdbserver
   - gdm
