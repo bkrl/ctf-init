@@ -128,7 +128,6 @@ runcmd:
     rm -- "${ghidra_file}"
     ln -sf /opt/ghidra/ghidraRun /usr/local/bin/ghidra
   - gem install one_gadget
-
   - systemctl set-default graphical.target
 
 power_state:
