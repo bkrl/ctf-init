@@ -97,9 +97,34 @@ write_files:
       [chooser]
 
       [debug]
+  - path: /home/alex/.vimrc
+    owner: alex:alex
+    content: |
+      call plug#begin()
+      Plug 'jiangmiao/auto-pairs'
+      Plug 'tpope/vim-surround'
+      Plug 'sheerun/vim-polyglot'
+      call plug#end()
+
+      set number
+      set ignorecase smartcase
+      set nohlsearch
+      set linebreak
+      set splitright splitbelow
+
+      nnoremap Y y$
+
+      let g:AutoPairsShortcutToggle = '<C-p>'
+      let g:AutoPairsShortcutJump = '<C-n>'
+      let g:AutoPairsShortcutFastWrap = '<C-9>'
+      let g:AutoPairsShortcutBackInsert = '<C-b>'
+    defer: true
 
 runcmd:
   - passwd -d alex
+  - |
+    curl -fLo /usr/share/vim/vimfiles/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   - |
     set -e
     export CARGO_INSTALL_ROOT='/usr/local'
