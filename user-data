@@ -39,6 +39,7 @@ packages:
   - python3-pwntools
   - rubygems
   - spice-vdagent
+  - tmux
   - vim
   - wget
   - xz-devel
@@ -48,22 +49,15 @@ write_files:
     content: |
       [update]
       interval=never
-  - path: /usr/local/bin/pwntools-terminal
-    permissions: '0755'
-    content: |
-      #!/bin/sh
-      
-      exec "$@" <>"$(cat "$XDG_RUNTIME_DIR/pwntools-tty")" >&0 2>&1
+
+      [context]
+      terminal = ["tmux", "new-window", "-t", "pwntools", "--"]
   - path: /usr/local/bin/term
     permissions: '0755'
     content: |
       #!/bin/sh
       
-      set -e
-
-      tty > "$XDG_RUNTIME_DIR/pwntools-tty"
-      trap 'rm -f -- "$XDG_RUNTIME_DIR/pwntools-tty"' EXIT
-      tail -f /dev/null
+      exec tmux new -s pwntools
   - path: /etc/gdbinit
     content: |
       source /usr/local/lib/gef.py
