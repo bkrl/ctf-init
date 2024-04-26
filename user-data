@@ -51,7 +51,7 @@ write_files:
       interval=never
 
       [context]
-      terminal = ["tmux", "new-window", "-t", "pwntools", "--"]
+      terminal = ["tmux", "new-window", "-t", "pwntools"]
   - path: /usr/local/bin/term
     permissions: '0755'
     content: |
