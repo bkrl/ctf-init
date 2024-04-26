@@ -114,6 +114,7 @@ write_files:
       set nohlsearch
       set linebreak
       set splitright splitbelow
+      set mouse=a
 
       nnoremap Y y$
 
