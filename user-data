@@ -58,6 +58,9 @@ write_files:
       #!/bin/sh
       
       exec tmux new -s pwntools
+  - path: /etc/tmux.conf
+    content: |
+      set -g mouse on
   - path: /etc/gdbinit
     content: |
       source /usr/local/lib/gef.py
